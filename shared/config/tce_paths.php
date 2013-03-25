@@ -51,17 +51,17 @@
 /**
  * Host URL (e.g.: "http://www.yoursite.com").
  */
-define ('K_PATH_HOST', '');
+define ('K_PATH_HOST', 'http://localhost');
 
 /**
  * Relative URL where this program is installed (e.g.: "/").
  */
-define ('K_PATH_TCEXAM', '');
+define ('K_PATH_TCEXAM', '/tcexam/');
 
 /**
  * Real full path where this program is installed (e.g: "/var/www/html/TCExam/").
  */
-define ('K_PATH_MAIN', '');
+define ('K_PATH_MAIN', 'D:/Program Files/xampp/htdocs/TCExam/');
 
 /**
  * Constant used on TCPDF library.

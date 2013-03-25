@@ -54,7 +54,7 @@ define ('K_TCEXAM_VERSION', '11.4.002');
 /**
  * 2-letters code for default language.
  */
-define ('K_LANGUAGE', 'en');
+define ('K_LANGUAGE', 'cn');
 
 /**
  * If true, display a language selector.
@@ -211,7 +211,7 @@ define ('K_ERROR_TYPES', E_ALL | E_STRICT);
 /**
  * Enable error logs (../log/tce_errors.log).
  */
-define ('K_USE_ERROR_LOG', false);
+define ('K_USE_ERROR_LOG', true);
 
 /**
  * If true display messages and errors on Javascript popup window.
@@ -223,7 +223,8 @@ define ('K_ENABLE_JSERRORS', false);
  * Possible values are listed on:
  * http://php.net/manual/en/timezones.php
  */
-define ('K_TIMEZONE', 'UTC');
+//define ('K_TIMEZONE', 'UTC');
+define ('K_TIMEZONE', 'Asia/Shanghai');
 
 /**
  * Default minutes used to extend test duration.
@@ -275,7 +276,7 @@ $lang_resources = new TMXResourceBundle(K_PATH_TMX_FILE, K_USER_LANG, K_PATH_LAN
 $l = $lang_resources->getResource(); // language array
 
 ini_set('arg_separator.output', '&amp;');
-//date_default_timezone_set(K_TIMEZONE);
+date_default_timezone_set(K_TIMEZONE);
 
 if(!defined('PHP_VERSION_ID')) {
 	$version = PHP_VERSION;

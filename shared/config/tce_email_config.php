@@ -46,10 +46,10 @@ $emailcfg['Encoding'] = '8bit';
 $emailcfg['AttachmentsEncoding'] = 'base64';
 
 // Sets the default Administrator email. The join requests and confirmations will be sent to this address.
-$emailcfg['AdminEmail'] = '';
+$emailcfg['AdminEmail'] = 'sxxtadmin@126.com';
 
 // Sets the From email address for the message. Default value is 'root@localhost'.
-$emailcfg['From'] = '';
+$emailcfg['From'] = 'sxxtadmin@126.com';
 
 // Sets the From name of the message. Default value is 'Root User'.
 $emailcfg['FromName'] = 'TCExam';
@@ -70,7 +70,8 @@ $emailcfg['WordWrap'] = false;
 $emailcfg['Mailer'] = 'smtp';
 
 // Sets the path of the sendmail program. Default value is '/usr/sbin/sendmail'.
-$emailcfg['Sendmail'] = '/usr/sbin/sendmail';
+//$emailcfg['Sendmail'] = '/usr/sbin/sendmail';
+$emailcfg['Sendmail'] = '/sendmail/sendmail.exe';
 
 // Turns Microsoft mail client headers on and off. Default value is false (off).
 $emailcfg['UseMSMailHeaders'] = false;
@@ -91,10 +92,10 @@ $emailcfg['MsgFooter'] = '</body></html>';
 // -----------------------------------------------------------------------------
 
 // Sets the SMTP hosts. All hosts must be separated by a semicolon (e.g. Host("smtp1.domain.com;smtp2.domain.com"). Hosts will be tried in order.
-$emailcfg['Host'] = 'smtp.gmail.com';
+$emailcfg['Host'] = 'smtp.126.com';
 
 // Sets the SMTP server port. Default value is 25.
-$emailcfg['Port'] = 465;
+$emailcfg['Port'] = 25;
 
 // Default value is 'localhost.localdomain'.
 $emailcfg['Helo'] = '';
@@ -103,13 +104,13 @@ $emailcfg['Helo'] = '';
 $emailcfg['SMTPAuth'] = true;
 
 // Sets the prefix to the server. Options are '', 'ssl' or 'tls'.
-$emailcfg['SMTPSecure'] = 'ssl';
+$emailcfg['SMTPSecure'] = '';
 
 // Sets SMTP username. Default value is ''.
-$emailcfg['Username'] = '';
+$emailcfg['Username'] = 'sxxtadmin';
 
 // Sets SMTP password. Default value is ''.
-$emailcfg['Password'] = '';
+$emailcfg['Password'] = 'sxxtadmin123';
 
 // Sets the SMTP server timeout in seconds.
 $emailcfg['Timeout'] = 10;

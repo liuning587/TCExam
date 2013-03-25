@@ -52,17 +52,17 @@
 /**
  * Header title.
  */
-define ('PDF_HEADER_TITLE', "School name");
+define ('PDF_HEADER_TITLE', "Sanxing Electric Co.,Ltd.");
 
 /**
  * Header description string.
  */
-define ('PDF_HEADER_STRING', "first row\nsecond row\nthird row");
+define ('PDF_HEADER_STRING', "Äã\nSystems Development Division\nSoftware Department");
 
 /**
  * Image logo.
  */
-define ('PDF_HEADER_LOGO', 'logo_example.png');
+define ('PDF_HEADER_LOGO', 'sxlogo.png');
 
 /**
  * Header logo image width [mm].
@@ -133,6 +133,7 @@ define ('PDF_MARGIN_RIGHT', 15);
  * Main font name.
  */
 define ('PDF_FONT_NAME_MAIN', 'helvetica');
+//define ('PDF_FONT_NAME_MAIN', 'stsongstdlight');
 
 /**
  * Main font size.
@@ -142,7 +143,9 @@ define ('PDF_FONT_SIZE_MAIN', 9);
 /**
  * Data font name.
  */
-define ('PDF_FONT_NAME_DATA', 'helvetica');
+//define ('PDF_FONT_NAME_DATA', 'helvetica');
+define ('PDF_FONT_NAME_DATA', 'stsongstdlight');
+//define ('PDF_FONT_NAME_DATA', 'msungstdlight');
 
 /**
  * Data font size.
@@ -152,7 +155,8 @@ define ('PDF_FONT_SIZE_DATA', 7);
 /**
  * default monospaced font name
  */
-define ('PDF_FONT_MONOSPACED', 'courier');
+//define ('PDF_FONT_MONOSPACED', 'helvetica');
+define ('PDF_FONT_MONOSPACED', 'stsongstdlight');
 
 /**
  * ratio used to adjust the conversion of pixels to user units
@@ -246,7 +250,7 @@ define('K_DIGSIG_REASON', 'Certification');
 /**
  * Information provided by the signer to enable a recipient to contact the signer to verify the signature; for example, a phone number or email address.
  */
-define('K_DIGSIG_CONTACT', 'you@example.com');
+define('K_DIGSIG_CONTACT', 'http://www.sanxing.com/');
 
 //============================================================+
 // END OF FILE

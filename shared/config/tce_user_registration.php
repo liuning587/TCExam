@@ -52,7 +52,7 @@
 /**
  * If true enable USER REGISTRATION.
  */
-define ('K_USRREG_ENABLED', true);
+define ('K_USRREG_ENABLED', false);
 
 /**
  * If true requires email confirmation.
