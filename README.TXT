@@ -1,6 +1,13 @@
-TCExam - README
+﻿TCExam - README
 ===========================================================
-
+修改说明：
+    本程序在v11.4.002版本基础之上做修改：
+    1. 修改页面默认配置为中文；
+    2. 修改mail设置；
+    3. 修改pdf设置支持中文英文，并删除了无用的front；
+    4. 修改了php时区问题导致的时差7小时；
+    5. 修改了pdf的Logo；
+-----------------------------------------------------------
 I WISH TO IMPROVE AND EXPAND TCEXAM BUT I NEED YOUR SUPPORT.
 PLEASE MAKE A DONATION:
 http://sourceforge.net/donate/index.php?group_id=159398
