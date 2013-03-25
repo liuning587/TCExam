@@ -57,7 +57,7 @@ define ('PDF_HEADER_TITLE', "Sanxing Electric Co.,Ltd.");
 /**
  * Header description string.
  */
-define ('PDF_HEADER_STRING', "Äã\nSystems Development Division\nSoftware Department");
+define ('PDF_HEADER_STRING', "\nSystems Development Division\nSoftware Department");
 
 /**
  * Image logo.
@@ -132,8 +132,9 @@ define ('PDF_MARGIN_RIGHT', 15);
 /**
  * Main font name.
  */
-define ('PDF_FONT_NAME_MAIN', 'helvetica');
+//define ('PDF_FONT_NAME_MAIN', 'helvetica');
 //define ('PDF_FONT_NAME_MAIN', 'stsongstdlight');
+define ('PDF_FONT_NAME_MAIN', 'droidsansfallback');
 
 /**
  * Main font size.
@@ -144,7 +145,8 @@ define ('PDF_FONT_SIZE_MAIN', 9);
  * Data font name.
  */
 //define ('PDF_FONT_NAME_DATA', 'helvetica');
-define ('PDF_FONT_NAME_DATA', 'stsongstdlight');
+//define ('PDF_FONT_NAME_DATA', 'stsongstdlight');
+define ('PDF_FONT_NAME_DATA', 'droidsansfallback');
 //define ('PDF_FONT_NAME_DATA', 'msungstdlight');
 
 /**
@@ -156,7 +158,8 @@ define ('PDF_FONT_SIZE_DATA', 7);
  * default monospaced font name
  */
 //define ('PDF_FONT_MONOSPACED', 'helvetica');
-define ('PDF_FONT_MONOSPACED', 'stsongstdlight');
+//define ('PDF_FONT_MONOSPACED', 'stsongstdlight');
+define ('PDF_FONT_MONOSPACED', 'droidsansfallback');
 
 /**
  * ratio used to adjust the conversion of pixels to user units
