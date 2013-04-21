@@ -1,31 +1,23 @@
-﻿TCExam - README
+TCExam - README
 ===========================================================
-修改说明：
-    本程序在v11.4.002版本基础之上做修改：
-    1. 修改页面默认配置为中文；
-    2. 修改mail设置；
-    3. 修改pdf设置支持中文英文，并删除了无用的front；
-    4. 修改了php时区问题导致的时差7小时；
-    5. 修改了pdf的Logo；
------------------------------------------------------------
-I WISH TO IMPROVE AND EXPAND TCEXAM BUT I NEED YOUR SUPPORT.
-PLEASE MAKE A DONATION:
+
+TO SUPPORT THE TCEXAM PROJECT PLEASE MAKE A DONATION:
 http://sourceforge.net/donate/index.php?group_id=159398
 
-FOR COMMERCIAL USAGE PLEASE CONTACT: info@tecnick.com
+FOR ANY COMMERCIAL USAGE PLEASE CONTACT: info@tecnick.com
 
 ------------------------------------------------------------
 
 Name: TCExam
 
-Version: 11.4.002
+Version: 12.0.008
 
-Release date: 2012-11-14
+Release date: 2013-04-12
 
 Author:
 	Nicola Asuni
 
-Copyright (c) 2004-2012:
+Copyright (c) 2004-2013:
 	Nicola Asuni
 	Tecnick.com LTD
 	Manor Coach House, Church Hill
@@ -48,12 +40,12 @@ Support - Help:
 	Please use support forum under http://www.sourceforge.net/projects/tcexam
 
 Software License
-	Copyright (C) 2004-2012 Nicola Asuni - Tecnick.com LTD
+	Copyright (C) 2004-2013 Nicola Asuni - Tecnick.com LTD
 
-	This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or (at your option) any later version.
+	This program is free software for non-commercial usage: 
+	you can redistribute it and/or modify it under the terms of the 
+	GNU Affero General Public License as published by the Free Software 
+	Foundation, either version 3 of the License, or (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -65,7 +57,8 @@ Software License
 
 	Additionally, you can't remove, move or hide the original TCExam
 	logo, copyrights statements and links to Tecnick.com and TCExam Websites.
-	Please contact info@tecnick.com for commercial usage.
+	
+	For any commercial usage please contact info@tecnick.com.
 
 	See LICENSE.TXT file for more information.
 
@@ -108,6 +101,12 @@ Third-party Software
 		Homepage: http://dynarch.com/mishoo/
 		License: LGPL (GNU LESSER GENERAL PUBLIC LICENSE)
 		Location: /shared/jscripts/jscalendar/
+
+	Javascript VirtualKeyboard
+		Author: Ilya Lebedev (ilya@lebedev.net)
+		Homepage: http://debugger.ru/projects/virtualkeyboard
+		License: LGPL (GNU LESSER GENERAL PUBLIC LICENSE)
+		Location: /shared/jscripts/vk/
 
 	Fonts
 		TCExam includes fonts for the TCPDF library, they are not striclty required but have been included as you convenience. The original TTF font files have been renamed for compatibility with TCPDF and compressed using the gzcompress PHP function that uses the ZLIB data format (.z files). To get the original distribution archives please check the information on fonts subfolders:
@@ -165,7 +164,7 @@ Description:
 	their test, or have it delivered via email.
 
 	* Data Import and Export: TCExam uses Open Standard protocols for data
-	filing and interchange: CSV, XML and PDF. Everything is fully documented to
+	filing and interchange: TSV, XML and PDF. Everything is fully documented to
 	be easily extended or used by external applications. Custom filters can be
 	added to import data from other systems. Include Optical Mark Recognition
 	(OMR) system to import users' answers from paper sheets. TCExam supports
@@ -187,7 +186,7 @@ Description:
 	scoring and reporting.
 
 	* Security: TCExam is more secure than traditional Pen-and-Paper testing.
-	It uses SSL (Secure Socket Layer) encryption and includes various
+	It supports SSL (Secure Socket Layer) encryption and includes various
 	authentication levels to discriminate the access to the various sections
 	(user/password, access level, group, IP address). Test time, test activity,
 	results, and statistics: every part of the test is managed and stored in the

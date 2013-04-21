@@ -2,7 +2,7 @@
 //============================================================+
 // File name   : tce_functions_authorization.php
 // Begin       : 2001-09-26
-// Last Update : 2012-09-14
+// Last Update : 2013-03-27
 //
 // Description : Functions for Authorization / LOGIN
 //
@@ -18,7 +18,7 @@
 //               info@tecnick.com
 //
 // License:
-//    Copyright (C) 2004-2012  Nicola Asuni - Tecnick.com LTD
+//    Copyright (C) 2004-2013 Nicola Asuni - Tecnick.com LTD
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU Affero General Public License as
@@ -61,11 +61,9 @@
  * @param fmethod String method attribute (get/post)
  * @param fenctype String enctype attribute
  * @param username String user name
- * @param password String password
- * @param isize int enctype input fields horizontal size
  * @return XHTML string for login form
  */
-function F_loginForm($faction, $fid, $fmethod, $fenctype, $username, $password, $isize=20) {
+function F_loginForm($faction, $fid, $fmethod, $fenctype, $username) {
 	global $l;
 	require_once('../config/tce_config.php');
 	require_once('../../shared/config/tce_user_registration.php');
@@ -80,6 +78,10 @@ function F_loginForm($faction, $fid, $fmethod, $fenctype, $username, $password, 
 	$str .= getFormRowTextInput('xuser_name', $l['w_username'], $l['h_login_name'], '', $username, '', 255, false, false, false, '');
 	// password
 	$str .= getFormRowTextInput('xuser_password', $l['w_password'], $l['h_password'], '', '', '', 255, false, false, true, '');
+	// One Time Password code (OTP)
+	if (K_OTP_LOGIN) {
+		$str .= getFormRowTextInput('xuser_otpcode', $l['w_otpcode'], $l['h_otpcode'], '', '', '', 255, false, false, true, '');
+	}
 	if (defined('K_PASSWORD_RESET') AND K_PASSWORD_RESET) {
 		// print a link to password reset page
 		$str .= '<div class="row">'.K_NEWLINE;
@@ -88,8 +90,8 @@ function F_loginForm($faction, $fid, $fmethod, $fenctype, $username, $password, 
 	}
 	// buttons
 	$str .= '<div class="row">'.K_NEWLINE;
-	// the following field is used to check if form has been submitted
 	$str .= '<input type="submit" name="login" id="login" value="'.$l['w_login'].'" title="'.$l['h_login_button'].'" />'.K_NEWLINE;
+	// the following field is used to check if the form has been submitted
 	$str .= '<input type="hidden" name="logaction" id="logaction" value="login" />'.K_NEWLINE;
 	$str .= '</div>'.K_NEWLINE;
 	$str .= '</form>'.K_NEWLINE;
@@ -140,7 +142,7 @@ function F_login_form() {
 	require_once('../../shared/code/tce_functions_form.php');
 	$thispage_title = $l['t_login_form']; //set page title
 	require_once('../code/tce_page_header.php');
-	echo F_loginForm($_SERVER['SCRIPT_NAME'], 'form_login', 'post', 'multipart/form-data', $xuser_name, $xuser_password, 20);
+	echo F_loginForm($_SERVER['SCRIPT_NAME'], 'form_login', 'post', 'multipart/form-data', $xuser_name);
 	require_once('../code/tce_page_footer.php');
 	exit(); //break page here
 }
@@ -207,7 +209,7 @@ function F_isAuthorizedUser($table, $field_id_name, $value_id, $field_user_id) {
 	$field_user_id = F_escape_sql($field_user_id);
 	$user_id = intval($_SESSION['session_user_id']);
 	// check for administrator
-	if ($_SESSION['session_user_level'] >= K_AUTH_ADMINISTRATOR) {
+	if (defined('K_AUTH_ADMINISTRATOR') AND ($_SESSION['session_user_level'] >= K_AUTH_ADMINISTRATOR)) {
 		return true;
 	}
 	// check for original author
@@ -327,6 +329,27 @@ function F_syncUserGroups($usrid, $grpids) {
 			}
 		}
 	}
+}
+
+/**
+ * Check if the client has a valid SSL certificate.
+ * @return true if the client has a valid SSL certificate, false otherwise.
+ * @author Nicola Asuni
+ * @since 2013-03-26
+ */
+function F_isSslCertificateValid() {
+	if (!isset($_SERVER['SSL_CLIENT_M_SERIAL']) // The serial of the client certificate
+		OR !isset($_SERVER['SSL_CLIENT_I_DN']) // Issuer DN of client's certificate
+		OR !isset($_SERVER['SSL_CLIENT_V_END']) // Validity of server's certificate (end time)
+		OR !isset($_SERVER['SSL_CLIENT_VERIFY']) // NONE, SUCCESS, GENEROUS or FAILED:reason
+		OR ($_SERVER['SSL_CLIENT_VERIFY'] !== 'SUCCESS')
+		OR !isset($_SERVER['SSL_CLIENT_V_REMAIN']) // Number of days until client's certificate expires
+		OR ($_SERVER['SSL_CLIENT_V_REMAIN'] <= 0)) {
+		// invalid certificate
+		return false;
+	}
+	// valid certificate
+	return true;
 }
 
 //============================================================+

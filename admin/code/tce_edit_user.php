@@ -2,7 +2,7 @@
 //============================================================+
 // File name   : tce_edit_user.php
 // Begin       : 2002-02-08
-// Last Update : 2012-06-07
+// Last Update : 2013-04-03
 //
 // Description : Edit user data.
 //
@@ -18,7 +18,7 @@
 //               info@tecnick.com
 //
 // License:
-//    Copyright (C) 2004-2012  Nicola Asuni - Tecnick.com LTD
+//    Copyright (C) 2004-2013 Nicola Asuni - Tecnick.com LTD
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU Affero General Public License as
@@ -60,6 +60,7 @@ $enable_calendar = true;
 require_once('../code/tce_page_header.php');
 
 require_once('../../shared/code/tce_functions_form.php');
+require_once('../../shared/code/tce_functions_otp.php');
 require_once('tce_functions_user_select.php');
 
 if (isset($_REQUEST['user_id'])) {
@@ -148,28 +149,34 @@ switch($menu_mode) { // process submitted data
 			// check if name is unique
 			if (!F_check_unique(K_TABLE_USERS, 'user_name=\''.F_escape_sql($user_name).'\'', 'user_id', $user_id)) {
 				F_print_error('WARNING', $l['m_duplicate_name']);
-				$formstatus = FALSE; F_stripslashes_formfields();
+				$formstatus = FALSE;
+				F_stripslashes_formfields();
 				break;
 			}
 			// check if registration number is unique
 			if (isset($user_regnumber) AND (strlen($user_regnumber) > 0) AND (!F_check_unique(K_TABLE_USERS, 'user_regnumber=\''.F_escape_sql($user_regnumber).'\'', 'user_id', $user_id))) {
 				F_print_error('WARNING', $l['m_duplicate_regnumber']);
-				$formstatus = FALSE; F_stripslashes_formfields();
+				$formstatus = FALSE;
+				F_stripslashes_formfields();
 				break;
 			}
 			// check if ssn is unique
 			if (isset($user_ssn) AND (strlen($user_ssn) > 0) AND (!F_check_unique(K_TABLE_USERS, 'user_ssn=\''.F_escape_sql($user_ssn).'\'', 'user_id', $user_id))) {
 				F_print_error('WARNING', $l['m_duplicate_ssn']);
-				$formstatus = FALSE; F_stripslashes_formfields();
+				$formstatus = FALSE;
+				F_stripslashes_formfields();
 				break;
 			}
 			// check password
 			if (!empty($newpassword) OR !empty($newpassword_repeat)) {
 				if ($newpassword == $newpassword_repeat) {
 					$user_password = getPasswordHash($newpassword);
+					// update OTP key
+					$user_otpkey = F_getRandomOTPkey();
 				} else { //print message and exit
 					F_print_error('WARNING', $l['m_different_passwords']);
-					$formstatus = FALSE; F_stripslashes_formfields();
+					$formstatus = FALSE;
+					F_stripslashes_formfields();
 					break;
 				}
 			}
@@ -185,7 +192,8 @@ switch($menu_mode) { // process submitted data
 				user_birthdate='.F_empty_to_null($user_birthdate).',
 				user_birthplace='.F_empty_to_null($user_birthplace).',
 				user_ssn='.F_empty_to_null($user_ssn).',
-				user_level=\''.$user_level.'\'
+				user_level=\''.$user_level.'\',
+				user_otpkey='.F_empty_to_null($user_otpkey).'
 				WHERE user_id='.$user_id.'';
 			if (!$r = F_db_query($sql, $db)) {
 				F_display_db_error(false);
@@ -249,6 +257,8 @@ switch($menu_mode) { // process submitted data
 			if (!empty($newpassword) OR !empty($newpassword_repeat)) { // update password
 				if ($newpassword == $newpassword_repeat) {
 					$user_password = getPasswordHash($newpassword);
+					// update OTP key
+					$user_otpkey = F_getRandomOTPkey();
 				} else { //print message and exit
 					F_print_error('WARNING', $l['m_different_passwords']);
 					$formstatus = FALSE; F_stripslashes_formfields();
@@ -275,7 +285,8 @@ switch($menu_mode) { // process submitted data
 				user_birthdate,
 				user_birthplace,
 				user_ssn,
-				user_level
+				user_level,
+				user_otpkey
 				) VALUES (
 				\''.F_escape_sql($user_regdate).'\',
 				\''.F_escape_sql($user_ip).'\',
@@ -288,7 +299,8 @@ switch($menu_mode) { // process submitted data
 				'.F_empty_to_null($user_birthdate).',
 				'.F_empty_to_null($user_birthplace).',
 				'.F_empty_to_null($user_ssn).',
-				\''.$user_level.'\'
+				\''.$user_level.'\',
+				'.F_empty_to_null($user_otpkey).'
 				)';
 			if (!$r = F_db_query($sql, $db)) {
 				F_display_db_error(false);
@@ -329,6 +341,7 @@ switch($menu_mode) { // process submitted data
 		$user_birthplace = '';
 		$user_ssn = '';
 		$user_level = '';
+		$user_otpkey = '';
 		break;
 	}
 
@@ -355,6 +368,7 @@ if ($formstatus) {
 			$user_birthplace = '';
 			$user_ssn = '';
 			$user_level = '';
+			$user_otpkey = '';
 		} else {
 			$sql = 'SELECT * FROM '.K_TABLE_USERS.' WHERE user_id='.$user_id.' LIMIT 1';
 			if ($r = F_db_query($sql, $db)) {
@@ -372,6 +386,7 @@ if ($formstatus) {
 					$user_birthplace = $m['user_birthplace'];
 					$user_ssn = $m['user_ssn'];
 					$user_level = $m['user_level'];
+					$user_otpkey = $m['user_otpkey'];
 				} else {
 					$user_regdate = '';
 					$user_ip = '';
@@ -385,6 +400,7 @@ if ($formstatus) {
 					$user_birthplace = '';
 					$user_ssn = '';
 					$user_level = '';
+					$user_otpkey = '';
 				}
 			} else {
 				F_display_db_error();
@@ -488,6 +504,21 @@ if ($r = F_db_query($sql, $db)) {
 echo '</select>'.K_NEWLINE;
 echo '</span>'.K_NEWLINE;
 echo '</div>'.K_NEWLINE;
+
+echo getFormRowTextInput('user_otpkey', $l['w_otpkey'], $l['h_otpkey'], '', $user_otpkey, '', 255, false, false, false);
+
+// display QR-Code for Google authenticator
+if (!empty($user_otpkey)) {
+	require_once('../../shared/tcpdf/tcpdf_barcodes_2d.php');
+	$host = preg_replace('/[h][t][t][p][s]?[:][\/][\/]/', '', K_PATH_HOST);
+	$qrcode = new TCPDF2DBarcode('otpauth://totp/'.$user_name.'@'.$host.'?secret='.$user_otpkey, 'QRCODE,H');
+	echo '<div class="row">'.K_NEWLINE;
+	echo '<span class="label">'.$l['w_otp_qrcode'].'</span>'.K_NEWLINE;
+	echo '<span class="formw" style="margin:30px 0px 30px 0px;">'.K_NEWLINE;
+	echo $qrcode->getBarcodeHTML(6, 6, 'black');
+	echo '</span>'.K_NEWLINE;
+	echo '</div>'.K_NEWLINE;
+}
 
 echo '<div class="row">'.K_NEWLINE;
 // show buttons by case

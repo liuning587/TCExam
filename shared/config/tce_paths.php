@@ -56,7 +56,7 @@ define ('K_PATH_HOST', 'http://localhost');
 /**
  * Relative URL where this program is installed (e.g.: "/").
  */
-define ('K_PATH_TCEXAM', '/tcexam/');
+define ('K_PATH_TCEXAM', '/TCExam/');
 
 /**
  * Real full path where this program is installed (e.g: "/var/www/html/TCExam/").

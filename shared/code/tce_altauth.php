@@ -2,10 +2,10 @@
 //============================================================+
 // File name   : tce_altauth.php
 // Begin       : 2008-03-28
-// Last Update : 2012-06-05
+// Last Update : 2013-03-27
 //
 // Description : Check user authorization against alternative
-//               systems (HTTP-BASIC, CAS, SHIBBOLETH, RADIUS, LDAP)
+//               systems (SSL, HTTP-BASIC, CAS, SHIBBOLETH, RADIUS, LDAP)
 //
 // Author: Nicola Asuni
 //
@@ -19,7 +19,7 @@
 //               info@tecnick.com
 //
 // License:
-//    Copyright (C) 2004-2012  Nicola Asuni - Tecnick.com LTD
+//    Copyright (C) 2004-2013 Nicola Asuni - Tecnick.com LTD
 //
 //    This program is free software: you can redistribute it and/or modify
 //    it under the terms of the GNU Affero General Public License as
@@ -50,7 +50,7 @@
 
 /**
  * Try various external Login Systems.
- * (HTTP-BASIC, CAS, SHIBBOLETH, RADIUS, LDAP)
+ * (SSL, HTTP-BASIC, CAS, SHIBBOLETH, RADIUS, LDAP)
  * @return array of user's data for successful login, false otherwise
  * @since 2012-06-05
  */
@@ -60,7 +60,43 @@ function F_altLogin() {
 
 	// TCExam tries to retrive the user login information from the following systems:
 
-	// 1) HTTP BASIC ---------------------------------------------------
+	// 1) SSL ----------------------------------------------------------
+	require_once('../../shared/config/tce_ssl.php');
+	if (K_SSL_ENABLED AND (!isset($_SESSION['logout']) OR !$_SESSION['logout'])) {
+		if (isset($_SERVER['SSL_CLIENT_M_SERIAL']) // The serial of the client certificate
+				AND isset($_SERVER['SSL_CLIENT_I_DN']) // Issuer DN of client's certificate
+				AND isset($_SERVER['SSL_CLIENT_V_END']) // Validity of server's certificate (end time)
+				AND isset($_SERVER['SSL_CLIENT_VERIFY']) // NONE, SUCCESS, GENEROUS or FAILED:reason
+				AND  ($_SERVER['SSL_CLIENT_VERIFY'] === 'SUCCESS')
+				AND isset($_SERVER['SSL_CLIENT_V_REMAIN']) // Number of days until client's certificate expires
+				AND ($_SERVER['SSL_CLIENT_V_REMAIN'] <= 0)) {
+			$_POST['xuser_name'] = md5($_SERVER['SSL_CLIENT_M_SERIAL'].$_SERVER['SSL_CLIENT_I_DN']);
+			$_POST['xuser_password'] = getPasswordHash($_SERVER['SSL_CLIENT_M_SERIAL'].$_SERVER['SSL_CLIENT_I_DN'].K_RANDOM_SECURITY.$_SERVER['SSL_CLIENT_V_END']);
+			$_POST['logaction'] = 'login';
+			$usr = array();
+			if (isset($_SERVER['SSL_CLIENT_S_DN_Email'])) {
+				$usr['user_email'] = $_SERVER['SSL_CLIENT_S_DN_Email'];
+			} else {
+				$usr['user_email'] = '';
+			}
+			if (isset($_SERVER['SSL_CLIENT_S_DN_CN'])) {
+				$usr['user_firstname'] = $_SERVER['SSL_CLIENT_S_DN_CN'];
+			} else {
+				$usr['user_firstname'] = '';
+			}
+			$usr['user_lastname'] = '';
+			$usr['user_birthdate'] = '';
+			$usr['user_birthplace'] = '';
+			$usr['user_regnumber'] = '';
+			$usr['user_ssn'] = '';
+			$usr['user_level'] = K_SSL_USER_LEVEL;
+			$usr['usrgrp_group_id'] = K_SSL_USER_GROUP_ID;
+			return $usr;
+		}
+	}
+	// -----------------------------------------------------------------
+
+	// 2) HTTP BASIC ---------------------------------------------------
 	require_once('../../shared/config/tce_httpbasic.php');
 	if (K_HTTPBASIC_ENABLED AND (!isset($_SESSION['logout']) OR !$_SESSION['logout'])) {
 		if (isset($_SERVER['AUTH_TYPE']) AND ($_SERVER['AUTH_TYPE'] == 'Basic')
@@ -84,7 +120,7 @@ function F_altLogin() {
 	}
 	// -----------------------------------------------------------------
 
-	// 2) CAS - Central Authentication Service -------------------------
+	// 3) CAS - Central Authentication Service -------------------------
 	require_once('../../shared/config/tce_cas.php');
 	if (K_CAS_ENABLED) {
 		require_once('../../shared/cas/CAS.php');
@@ -110,24 +146,35 @@ function F_altLogin() {
 	}
 	// -----------------------------------------------------------------
 
-	// 3) Shibboleth ---------------------------------------------------
+	// 4) Shibboleth ---------------------------------------------------
 	require_once('../../shared/config/tce_shibboleth.php');
 	if (K_SHIBBOLETH_ENABLED AND (!isset($_SESSION['logout']) OR !$_SESSION['logout'])) {
 		if (isset($_SERVER['AUTH_TYPE']) AND ($_SERVER['AUTH_TYPE'] == 'shibboleth')
 			AND ((isset($_SERVER['Shib_Session_ID']) AND !empty($_SERVER['Shib_Session_ID']))
 				OR (isset($_SERVER['HTTP_SHIB_IDENTITY_PROVIDER']) AND !empty($_SERVER['HTTP_SHIB_IDENTITY_PROVIDER'])))
-			AND isset($_SERVER['PHP_AUTH_USER'])
-			AND ($_SESSION['session_user_name'] != $_SERVER['PHP_AUTH_USER'])) {
-			$_POST['xuser_name'] = $_SERVER['PHP_AUTH_USER'];
+			AND isset($_SERVER['eppn']) AND ($_SESSION['session_user_name'] != $_SERVER['eppn'])) {
+			$_POST['xuser_name'] = $_SERVER['eppn'];
 			$_POST['xuser_password'] = getPasswordHash($_POST['xuser_name'].K_RANDOM_SECURITY);
 			$_POST['logaction'] = 'login';
 			$usr = array();
-			$usr['user_email'] = '';
-			$usr['user_firstname'] = '';
-			$usr['user_lastname'] = '';
+			$usr['user_email'] = $_SERVER['eppn'];
+			if (isset($_SERVER['givenName'])) {
+				$usr['user_firstname'] = $_SERVER['givenName'];
+			} else {
+				$usr['user_firstname'] = '';
+			}
+			if (isset($_SERVER['sn'])) {
+				$usr['user_lastname'] = $_SERVER['sn'];
+			} else {
+				$usr['user_lastname'] = '';
+			}
 			$usr['user_birthdate'] = '';
 			$usr['user_birthplace'] = '';
-			$usr['user_regnumber'] = '';
+			if (isset($_SERVER['employeeNumber'])) {
+				$usr['user_regnumber'] = $_SERVER['employeeNumber'];
+			} else {
+				$usr['user_regnumber'] = '';
+			}
 			$usr['user_ssn'] = '';
 			$usr['user_level'] = K_SHIBBOLETH_USER_LEVEL;
 			$usr['usrgrp_group_id'] = K_SHIBBOLETH_USER_GROUP_ID;
@@ -138,7 +185,7 @@ function F_altLogin() {
 
 	if (isset($_POST['logaction']) AND ($_POST['logaction'] == 'login') AND isset($_POST['xuser_name']) AND isset($_POST['xuser_password'])) {
 
-		// 4) RADIUS ---------------------------------------------------
+		// 5) RADIUS ---------------------------------------------------
 		require_once('../../shared/config/tce_radius.php');
 		if (K_RADIUS_ENABLED) {
 			require_once('../../shared/radius/radius.class.php');
@@ -166,7 +213,7 @@ function F_altLogin() {
 		}
 		// -------------------------------------------------------------
 
-		// 5) LDAP -----------------------------------------------------
+		// 6) LDAP -----------------------------------------------------
 		require_once('../../shared/config/tce_ldap.php');
 		if (K_LDAP_ENABLED) {
 			// make ldap connection
