@@ -6854,7 +6854,7 @@ class TCPDF {
 					$imgdata = curl_exec($cs);
 					curl_close($cs);
 				} else {
-					$imgdata = @file_get_contents($file);
+					//$imgdata = @file_get_contents($file);
 				}
 			}
 		}

@@ -260,13 +260,14 @@ $pdf->SetTextColor(0,127,255);
 $msg = "\x50\x6f\x77\x65\x72\x65\x64\x20\x62\x79\x20\x54\x43\x45\x78\x61\x6d\x20\x28\x77\x77\x77\x2e\x74\x63\x65\x78\x61\x6d\x2e\x6f\x72\x67\x29";
 $lnk = "\x68\x74\x74\x70\x3a\x2f\x2f\x77\x77\x77\x2e\x74\x63\x65\x78\x61\x6d\x2e\x6f\x72\x67";
 $pdf->SetXY(15, $pdf->getPageHeight(), true);
-$pdf->Cell(0, 0, $msg, 0, 0, 'R', 0, $lnk, 0, false, 'B', 'B');
+//$pdf->Cell(0, 0, $msg, 0, 0, 'R', 0, $lnk, 0, false, 'B', 'B');
 
 // set PDF file name
 $pdf_filename = 'tcexam_report_'.date('YmdHi').'_'.$mode.'_'.$test_id.'_'.$group_id.'_'.$user_id.'_'.$testuser_id.'.pdf';
 
 if (isset($_REQUEST['email'])) {
-	$outmode = 'S';
+//	$outmode = 'S';
+	$outmode = 'D';
 } else {
 	$outmode = 'D';
 }
